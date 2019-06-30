@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import jsonify,redirect,url_for,request
+from flask import jsonify,redirect,url_for,request,render_template
 import requests
 import json
 
@@ -23,9 +23,9 @@ def func1(city):
 	return "city : %0.2f degree C"%c
 
 
-@app.route('/getreq',methods = ['GET'])
+@app.route('/getreq',methods = ['GET','POST'])
 def handling_req():
-	city = request.args['city']
+	city = request.form['city']
 	s = "http://api.openweathermap.org/data/2.5/weather?q={}&APPID=e8e89ff69324ed8ff44cd33519b12a8f".format(city)
 	x = requests.get(s)
 	y = json.loads(x.text)['main']['temp']
@@ -36,6 +36,17 @@ def handling_req():
 @app.route('/redirect')
 def red():
 	return redirect(url_for('func1',city="delhi"))
+
+
+@app.route('/webpage')
+def webpage():
+	return render_template('linkshortener.html')
+
+
+@app.route('/linkshortener',methods = ['GET'])
+def linkshort():
+	x = request.args
+	
 
 
 if __name__ == '__main__':
